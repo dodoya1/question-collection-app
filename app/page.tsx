@@ -290,45 +290,6 @@ export default function QASheetCreator() {
     }, 100);
   };
 
-  // Save to local storage
-  const saveToLocalStorage = () => {
-    try {
-      const filteredPairs = pairs.filter(
-        (pair) => pair.question.trim() !== "" || pair.answer.trim() !== ""
-      );
-      if (filteredPairs.length === 0) {
-        alert("保存するには少なくとも1つの質問と回答を入力してください。");
-        return;
-      }
-
-      localStorage.setItem("qa-sheet-data", JSON.stringify(filteredPairs));
-      alert("データが保存されました。");
-    } catch (error) {
-      console.error("Save error:", error);
-      alert("データの保存中にエラーが発生しました。");
-    }
-  };
-
-  // Load from local storage
-  const loadFromLocalStorage = () => {
-    try {
-      const savedData = localStorage.getItem("qa-sheet-data");
-      if (savedData) {
-        const loadedPairs = JSON.parse(savedData) as QAPair[];
-        if (loadedPairs.length > 0) {
-          setPairs(loadedPairs);
-          return true;
-        }
-      }
-      alert("保存されたデータが見つかりませんでした。");
-      return false;
-    } catch (error) {
-      console.error("Load error:", error);
-      alert("データの読み込み中にエラーが発生しました。");
-      return false;
-    }
-  };
-
   // Export as CSV
   const exportAsCSV = () => {
     try {
