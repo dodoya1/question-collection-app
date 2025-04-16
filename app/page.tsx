@@ -81,39 +81,12 @@ export default function QASheetCreator() {
     id: string,
     field: "question" | "answer"
   ) => {
-    if (e.key === "Tab") return; // Allow default tab behavior
+    // デフォルトのTabキーの動作のみを許可
+    if (e.key === "Tab") return;
 
+    // Enterキーのデフォルト動作を許可（改行）
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-
-      const currentIndex = pairs.findIndex((pair) => pair.id === id);
-
-      if (field === "question") {
-        // Move to answer field in the same pair
-        const answerField = document.getElementById(`answer-${idPrefix}-${id}`);
-        if (answerField) answerField.focus();
-      } else if (field === "answer") {
-        // If it's the last pair, add a new one and focus on its question field
-        if (currentIndex === pairs.length - 1) {
-          const newId = String(pairs.length);
-          setPairs([...pairs, { id: newId, question: "", answer: "" }]);
-
-          // Focus on the new question field after render
-          setTimeout(() => {
-            const newQuestionField = document.getElementById(
-              `question-${idPrefix}-${newId}`
-            );
-            if (newQuestionField) newQuestionField.focus();
-          }, 0);
-        } else {
-          // Move to the next pair's question field
-          const nextId = pairs[currentIndex + 1].id;
-          const nextQuestionField = document.getElementById(
-            `question-${idPrefix}-${nextId}`
-          );
-          if (nextQuestionField) nextQuestionField.focus();
-        }
-      }
+      return;
     }
   };
 
