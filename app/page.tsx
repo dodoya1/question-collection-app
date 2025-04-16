@@ -46,9 +46,14 @@ export default function QASheetCreator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastAnswerRef = useRef<HTMLTextAreaElement>(null);
 
+  // 一意のIDを生成する関数
+  const generateUniqueId = () => {
+    return String(Date.now() + Math.random().toString(36).substr(2, 9));
+  };
+
   // Add a new empty pair
   const addPair = () => {
-    const newId = String(pairs.length);
+    const newId = generateUniqueId();
     setPairs([...pairs, { id: newId, question: "", answer: "" }]);
 
     // 新しい質問フィールドにフォーカスを移動
@@ -126,13 +131,13 @@ export default function QASheetCreator() {
       for (let i = 0; i < lines.length; i += 2) {
         if (i + 1 < lines.length) {
           newPairs.push({
-            id: String(newPairs.length),
+            id: generateUniqueId(),
             question: lines[i],
             answer: lines[i + 1],
           });
         } else {
           newPairs.push({
-            id: String(newPairs.length),
+            id: generateUniqueId(),
             question: lines[i],
             answer: "",
           });
@@ -152,13 +157,13 @@ export default function QASheetCreator() {
 
         if (parts.length >= 2) {
           newPairs.push({
-            id: String(newPairs.length),
+            id: generateUniqueId(),
             question: parts[0],
             answer: parts[1],
           });
         } else if (parts.length === 1 && parts[0]) {
           newPairs.push({
-            id: String(newPairs.length),
+            id: generateUniqueId(),
             question: parts[0],
             answer: "",
           });
@@ -172,10 +177,10 @@ export default function QASheetCreator() {
           skipEmptyLines: true,
         });
         if (results.data && Array.isArray(results.data)) {
-          results.data.forEach((row: any, index: number) => {
+          results.data.forEach((row: any) => {
             if (Array.isArray(row) && row.length >= 2) {
               newPairs.push({
-                id: String(newPairs.length),
+                id: generateUniqueId(),
                 question: row[0]?.toString() || "",
                 answer: row[1]?.toString() || "",
               });
@@ -222,8 +227,8 @@ export default function QASheetCreator() {
             skipEmptyLines: true,
           });
           if (results.data && Array.isArray(results.data)) {
-            const newPairs = results.data.map((row: any, index: number) => ({
-              id: String(pairs.length + index),
+            const newPairs = results.data.map((row: any) => ({
+              id: generateUniqueId(),
               question: (Array.isArray(row) && row[0]?.toString()) || "",
               answer: (Array.isArray(row) && row[1]?.toString()) || "",
             }));
