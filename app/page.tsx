@@ -48,10 +48,18 @@ export default function QASheetCreator() {
 
   // Add a new empty pair
   const addPair = () => {
-    setPairs([
-      ...pairs,
-      { id: String(pairs.length), question: "", answer: "" },
-    ]);
+    const newId = String(pairs.length);
+    setPairs([...pairs, { id: newId, question: "", answer: "" }]);
+
+    // 新しい質問フィールドにフォーカスを移動
+    setTimeout(() => {
+      const newQuestionField = document.getElementById(
+        `question-${idPrefix}-${newId}`
+      );
+      if (newQuestionField) {
+        newQuestionField.focus();
+      }
+    }, 0);
   };
 
   // Update a specific pair
@@ -84,7 +92,19 @@ export default function QASheetCreator() {
     // デフォルトのTabキーの動作のみを許可
     if (e.key === "Tab") return;
 
-    // Enterキーのデフォルト動作を許可（改行）
+    // 最後の回答フィールドでCtrl+Enter（またはCmd+Enter）を押した場合
+    if (
+      field === "answer" &&
+      id === pairs[pairs.length - 1].id &&
+      e.key === "Enter" &&
+      (e.ctrlKey || e.metaKey)
+    ) {
+      e.preventDefault();
+      addPair();
+      return;
+    }
+
+    // その他のEnterキーの場合は改行を許可
     if (e.key === "Enter" && !e.shiftKey) {
       return;
     }
@@ -359,9 +379,9 @@ export default function QASheetCreator() {
                     <h3 className="font-medium">基本操作</h3>
                     <ul className="list-disc list-inside text-sm mt-1 space-y-1">
                       <li>質問と回答を入力フォームに直接入力できます</li>
-                      <li>回答欄でEnterキーを押すと次の質問に移動します</li>
+                      <li>Tabキーで次のフィールドに移動できます</li>
                       <li>
-                        最後の回答でEnterキーを押すと新しい質問が追加されます
+                        最後の回答フィールドでCtrl+Enter（MacではCmd+Enter）を押すと新しい質問が追加されます
                       </li>
                     </ul>
                   </div>
@@ -426,7 +446,7 @@ export default function QASheetCreator() {
                           回答 {index + 1}
                           {index === pairs.length - 1 && (
                             <span className="text-xs text-muted-foreground ml-2">
-                              (Enterキーで次の質問へ)
+                              (Ctrl+Enterで新しい質問を追加)
                             </span>
                           )}
                         </Label>
